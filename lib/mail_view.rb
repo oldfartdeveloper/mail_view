@@ -61,7 +61,7 @@ class MailView
         # Otherwise, show our message headers & frame the body.
         else
           part = find_preferred_part(mail, [format, 'text/html', 'text/plain'])
-          ok email_template.render(Object.new, :name => name, :mail => mail, :part => part, :part_url => part_body_url(part, email_addr))
+          ok email_template.render(Object.new, :name => name, :mail => mail, :part => part, :part_url => part_body_url(part))
         end
       else
         not_found
@@ -118,9 +118,10 @@ class MailView
       found || mail
     end
 
-    def part_body_url(part, email_addr)
-      email_str = email_addr ? "email=#{email_addr}&" : ""
-      "?#{email_str}part=%s" % Rack::Utils.escape([part.main_type, part.sub_type].compact.join('/'))
+    def part_body_url(part)
+      #email_str = email_addr ? "email=#{email_addr}&" : ""
+      #"?#{email_str}part=%s" % Rack::Utils.escape([part.main_type, part.sub_type].compact.join('/'))
+      "?part=%s" % Rack::Utils.escape([part.main_type, part.sub_type].compact.join('/'))
     end
 
     def find_part(mail, matching_content_type)
