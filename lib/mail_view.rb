@@ -23,10 +23,6 @@ class MailView
 
   def call(env)
     request = Rack::Request.new(env)
-    Rails.logger.info "*** path_info: #{request.path_info} ***"
-    Rails.logger.info "*** query_string: #{request.query_string} ***"
-
-    Rails.logger.info "*** request.params: #{request.params.inspect} ***"
 
     if request.path_info == "" || request.path_info == "/"
       links = self.actions.map do |action|
@@ -41,8 +37,6 @@ class MailView
       missing_format = ext && format.nil?
 
       email_addr = email_regex.match(request.params["email"]) ? request.params["email"] : nil
-
-      Rails.logger.info "*** email_addr: #{email_addr} ***"
 
       if actions.include?(name) && !missing_format
         mail = build_mail(name)
@@ -109,12 +103,6 @@ class MailView
         [404, {"Content-Type" => "text/html"}, ["Not Found"]]
       end
     end
-
-    #def build_mail(name, email_addr = nil)
-    #  mail = send(name, email_addr)
-    #  Mail.inform_interceptors(mail) if defined? Mail
-    #  mail
-    #end
 
     def build_mail(name)
       mail = send(name)
