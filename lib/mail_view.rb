@@ -28,8 +28,6 @@ class MailView
 
     Rails.logger.info "*** request.params: #{request.params.inspect} ***"
 
-    #query_array = request.query_string.split("&")
-
     if request.path_info == "" || request.path_info == "/"
       links = self.actions.map do |action|
         [action, "#{request.script_name}/#{action}"]
@@ -42,12 +40,7 @@ class MailView
       format = Rack::Mime.mime_type(ext, nil)
       missing_format = ext && format.nil?
 
-      email_addr = case request.query_string
-                   when email_regex
-                     request.query_string
-                   else
-                     nil
-                   end
+      email_addr = email_regex.match(request.params[:email]) ? request.params[:email] : nil
 
       if actions.include?(name) && !missing_format
         mail = build_mail(name, email_addr)
