@@ -24,6 +24,7 @@ class MailView
   def call(env)
     request = Rack::Request.new(env)
     Rails.logger.info "*** path_info: #{request.path_info} ***"
+    Rails.logger.info "*** query_string: #{request.query_string} ***"
 
     if request.path_info == "" || request.path_info == "/"
       links = self.actions.map do |action|
@@ -32,8 +33,9 @@ class MailView
 
       ok index_template.render(Object.new, :links => links)
 
-    elsif request.path =~ /([\w_]+)(\.\w+)?(\?(.*@.*\..*))?\z/
-      name, ext, email_addr = $1, $2, $4
+    elsif request.path =~ /([\w_]+)(\.\w+)?\z/
+      email_regex = /.*@.*\..*/
+      name, ext = $1, $2
       format = Rack::Mime.mime_type(ext, nil)
       missing_format = ext && format.nil?
 
