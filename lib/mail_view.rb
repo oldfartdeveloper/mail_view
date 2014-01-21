@@ -45,8 +45,12 @@ class MailView
       Rails.logger.info "*** email_addr: #{email_addr} ***"
 
       if actions.include?(name) && !missing_format
-        mail = build_mail(name, email_addr)
-        mail.deliver if email_addr
+        mail = build_mail(name)
+        if email_addr
+          sendable = mail
+          sendable[:to] = email_addr
+          sendable.deliver
+        end
 
         # Requested a specific bare MIME part. Render it verbatim.
         if part_type = request.params['part']
@@ -106,8 +110,14 @@ class MailView
       end
     end
 
-    def build_mail(name, email_addr = nil)
-      mail = send(name, email_addr)
+    #def build_mail(name, email_addr = nil)
+    #  mail = send(name, email_addr)
+    #  Mail.inform_interceptors(mail) if defined? Mail
+    #  mail
+    #end
+
+    def build_mail(name)
+      mail = send(name)
       Mail.inform_interceptors(mail) if defined? Mail
       mail
     end
