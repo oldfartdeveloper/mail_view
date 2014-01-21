@@ -34,10 +34,16 @@ class MailView
       ok index_template.render(Object.new, :links => links)
 
     elsif request.path =~ /([\w_]+)(\.\w+)?\z/
-      email_regex = /.*@.*\..*/
       name, ext = $1, $2
       format = Rack::Mime.mime_type(ext, nil)
       missing_format = ext && format.nil?
+
+      email_addr = case request.query_string
+                   when email_regex
+                     request.query_string
+                   else
+                     nil
+                   end
 
       if actions.include?(name) && !missing_format
         mail = build_mail(name, email_addr)
@@ -128,5 +134,9 @@ class MailView
       elsif matching_content_type && mail.content_type.to_s.match(matching_content_type)
         mail
       end
+    end
+
+    def email_regex
+      /.*@.*\..*/
     end
 end
