@@ -42,6 +42,8 @@ class MailView
 
       email_addr = email_regex.match(request.params[:email]) ? request.params[:email] : nil
 
+      Rails.logger.info "*** email_addr: #{email_addr} ***"
+
       if actions.include?(name) && !missing_format
         mail = build_mail(name, email_addr)
         mail.deliver if email_addr
