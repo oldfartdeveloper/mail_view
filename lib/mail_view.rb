@@ -26,6 +26,10 @@ class MailView
     Rails.logger.info "*** path_info: #{request.path_info} ***"
     Rails.logger.info "*** query_string: #{request.query_string} ***"
 
+    Rails.logger.info "*** request.params: #{request.params.inspect} ***"
+
+    #query_array = request.query_string.split("&")
+
     if request.path_info == "" || request.path_info == "/"
       links = self.actions.map do |action|
         [action, "#{request.script_name}/#{action}"]
