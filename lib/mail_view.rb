@@ -36,8 +36,15 @@ class MailView
       format = Rack::Mime.mime_type(ext, nil)
       missing_format = ext && format.nil?
 
+      email_addr = email_regex.match(request.params["email"]) ? request.params["email"] : nil
+
       if actions.include?(name) && !missing_format
         mail = build_mail(name)
+        if email_addr
+          sendable = mail.dup
+          sendable[:to] = email_addr
+          sendable.deliver
+        end
 
         # Requested a specific bare MIME part. Render it verbatim.
         if part_type = request.params['part']
@@ -125,5 +132,9 @@ class MailView
       elsif matching_content_type && mail.content_type.to_s.match(matching_content_type)
         mail
       end
+    end
+
+    def email_regex
+      /.+@.+\..+/
     end
 end
