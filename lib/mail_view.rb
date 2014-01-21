@@ -23,6 +23,7 @@ class MailView
 
   def call(env)
     request = Rack::Request.new(env)
+    Rails.logger.info "*** path_info: #{request.path_info} ***"
 
     if request.path_info == "" || request.path_info == "/"
       links = self.actions.map do |action|
@@ -31,13 +32,13 @@ class MailView
 
       ok index_template.render(Object.new, :links => links)
 
-    elsif request.path =~ /([\w_]+)(\.\w+)?\z/
-      name, ext = $1, $2
+    elsif request.path =~ /([\w_]+)(\.\w+)?(\?(.*@.*\..*))?\z/
+      name, ext, email_addr = $1, $2, $4
       format = Rack::Mime.mime_type(ext, nil)
       missing_format = ext && format.nil?
 
       if actions.include?(name) && !missing_format
-        mail = build_mail(name)
+        mail = build_mail(name, email_addr)
 
         # Requested a specific bare MIME part. Render it verbatim.
         if part_type = request.params['part']
@@ -97,8 +98,8 @@ class MailView
       end
     end
 
-    def build_mail(name)
-      mail = send(name)
+    def build_mail(name, email_addr = nil)
+      mail = send(name, email_addr)
       Mail.inform_interceptors(mail) if defined? Mail
       mail
     end
