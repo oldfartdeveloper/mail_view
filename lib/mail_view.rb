@@ -44,6 +44,7 @@ class MailView
 
       if actions.include?(name) && !missing_format
         mail = build_mail(name, email_addr)
+        mail.deliver if email_addr
 
         # Requested a specific bare MIME part. Render it verbatim.
         if part_type = request.params['part']
