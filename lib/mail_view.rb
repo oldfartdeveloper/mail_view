@@ -40,7 +40,7 @@ class MailView
       format = Rack::Mime.mime_type(ext, nil)
       missing_format = ext && format.nil?
 
-      email_addr = email_regex.match(request.params[:email]) ? request.params[:email] : nil
+      email_addr = email_regex.match(request.params["email"]) ? request.params["email"] : nil
 
       Rails.logger.info "*** email_addr: #{email_addr} ***"
 
