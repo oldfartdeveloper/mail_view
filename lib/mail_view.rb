@@ -41,7 +41,7 @@ class MailView
       if actions.include?(name) && !missing_format
         mail = build_mail(name)
         if email_addr
-          sendable = mail
+          sendable = mail.dup
           sendable[:to] = email_addr
           sendable.deliver
         end
