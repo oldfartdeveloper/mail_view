@@ -117,7 +117,7 @@ class MailView
     end
 
     def part_body_url(part)
-      "?part=%s" % Rack::Utils.escape([part.main_type, part.sub_type].compact.join('/'))
+      '?part=%s' % Rack::Utils.escape([part.main_type, part.sub_type].compact.join('/'))
     end
 
     def find_part(mail, matching_content_type)
