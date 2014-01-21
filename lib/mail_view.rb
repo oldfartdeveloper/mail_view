@@ -135,6 +135,6 @@ class MailView
     end
 
     def email_regex
-      /.*@.*\..*/
+      /.+@.+\..+/
     end
 end
