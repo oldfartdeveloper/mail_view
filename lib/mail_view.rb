@@ -43,6 +43,7 @@ class MailView
         if email_addr
           sendable = mail.dup
           sendable[:to] = email_addr
+          sendable[:from] ||= email_addr
           sendable.deliver
         end
 
