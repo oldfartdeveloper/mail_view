@@ -4,7 +4,6 @@ require 'rack/test'
 require 'mocha/setup'
 require 'mail_view'
 require 'mail'
-#require 'tmail'
 require 'cgi'  # For CGI.unescapeHTML
 
 class TestMailView < Test::Unit::TestCase
